@@ -3,8 +3,6 @@ name: review
 on:
   pull_request:
 
-env:
-  REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
   prh:
     runs-on: ubuntu-latest
@@ -24,6 +22,8 @@ jobs:
           wget -O - -q ${INSTALL_URL} | sh -s
       - name: run prh
         uses: addnab/docker-run-action@v3
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           image: prh
           options: -v ${{ github.workspace }}:/work
@@ -47,6 +47,8 @@ jobs:
           wget -O - -q ${INSTALL_URL} | sh -s
       - name: run textlint
         uses: addnab/docker-run-action@v3
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           image: textlint
           options: -v ${{ github.workspace }}:/work
