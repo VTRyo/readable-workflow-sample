@@ -21,11 +21,18 @@ jobs:
           INSTALL_URL=${GITHUB_URL}/master/install.sh &&
           wget -O - -q ${INSTALL_URL} | sh -s
       - name: run prh
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: addnab/docker-run-action@v3
         with:
           image: prh
           options: -v ${{ github.workspace }}:/work
-          run: REVIEWDOG_GITHUB_API_TOKEN=${{ secrets.GITHUB_TOKEN }} sh .github/workflows/scripts/prh.sh
+          run: >
+            prh --rules ../../../prh/prh.yml --verify article-sample/*/*.md > prh.log
+            cat prh.log | bin/reviewdog -reporter=github-pr-review \
+            -diff='git --no-pager diff origin/main' \
+            -efm='%f(%l,%c): %m' \
+            -name=prh
 
   textlint:
     runs-on: ubuntu-latest
@@ -44,8 +51,16 @@ jobs:
           INSTALL_URL=${GITHUB_URL}/master/install.sh &&
           wget -O - -q ${INSTALL_URL} | sh -s
       - name: run textlint
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: addnab/docker-run-action@v3
         with:
           image: textlint
           options: -v ${{ github.workspace }}:/work
-          run: REVIEWDOG_GITHUB_API_TOKEN=${{ secrets.GITHUB_TOKEN }} sh .github/workflows/scripts/textlint.sh
+          run: >
+            textlint --format checkstyle --config ../../../textlint/.textlintrc article-sample/*/*.md > \
+            textlint.log
+            cat textlint.log | bin/reviewdog -reporter=github-pr-review \
+              -diff='git --no-pager diff origin/main' \
+              -f=checkstyle \
+              -name=textlint
