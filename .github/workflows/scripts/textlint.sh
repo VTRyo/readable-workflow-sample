@@ -1,5 +1,5 @@
 #!/bin/sh
-textlint --format checkstyle --config .textlintrc article-sample/*/*.md > \
+textlint --format checkstyle --config ../../../textlint/.textlintrc article-sample/*/*.md > \
 textlint.log || EXIT_CODE=$?
 
 cat textlint.log | bin/reviewdog -reporter=github-pr-review \

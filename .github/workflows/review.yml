@@ -22,12 +22,10 @@ jobs:
           wget -O - -q ${INSTALL_URL} | sh -s
       - name: run prh
         uses: addnab/docker-run-action@v3
-        env:
-          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           image: prh
           options: -v ${{ github.workspace }}:/work
-          run: .github/workflows/scripts/prh.sh
+          run: REVIEWDOG_GITHUB_API_TOKEN=${{ secrets.GITHUB_TOKEN }} sh .github/workflows/scripts/prh.sh
 
   textlint:
     runs-on: ubuntu-latest
@@ -47,9 +45,7 @@ jobs:
           wget -O - -q ${INSTALL_URL} | sh -s
       - name: run textlint
         uses: addnab/docker-run-action@v3
-        env:
-          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           image: textlint
           options: -v ${{ github.workspace }}:/work
-          run: .github/workflows/scripts/textlint.sh
+          run: REVIEWDOG_GITHUB_API_TOKEN=${{ secrets.GITHUB_TOKEN }} sh .github/workflows/scripts/textlint.sh

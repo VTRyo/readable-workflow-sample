@@ -1,5 +1,5 @@
 #!/bin/sh
-prh --rules prh.yml --verify article-sample/*/*.md > prh.log || \
+prh --rules ../../../prh/prh.yml --verify article-sample/*/*.md > prh.log || \
 EXIT_CODE=$?
 
 cat prh.log | bin/reviewdog -reporter=github-pr-review \
