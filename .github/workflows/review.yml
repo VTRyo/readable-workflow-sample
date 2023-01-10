@@ -28,7 +28,7 @@ jobs:
           image: prh
           options: -v ${{ github.workspace }}:/work
           run: >
-            prh --rules ../../../prh/prh.yml --verify article-sample/*/*.md > prh.log
+            prh --rules prh/prh.yml --verify article-sample/*/*.md > prh.log
             cat prh.log | bin/reviewdog -reporter=github-pr-review \
             -diff='git --no-pager diff origin/main' \
             -efm='%f(%l,%c): %m' \
@@ -58,7 +58,7 @@ jobs:
           image: textlint
           options: -v ${{ github.workspace }}:/work
           run: >
-            textlint --format checkstyle --config ../../../textlint/.textlintrc article-sample/*/*.md > \
+            textlint --format checkstyle --config textlint/.textlintrc article-sample/*/*.md > \
             textlint.log
             cat textlint.log | bin/reviewdog -reporter=github-pr-review \
               -diff='git --no-pager diff origin/main' \
