@@ -15,24 +15,17 @@ jobs:
           file: prh/Dockerfile
           tags: prh
           push: false
-      - name: install reviewdog
-        run: >
-          GITHUB_URL=https://raw.githubusercontent.com/reviewdog/reviewdog &&
-          INSTALL_URL=${GITHUB_URL}/master/install.sh &&
-          wget -O - -q ${INSTALL_URL} | sh -s
       - name: run prh
-        env:
-          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: addnab/docker-run-action@v3
         with:
           image: prh
           options: -v ${{ github.workspace }}:/work
           run: >
-            prh --rules prh/prh.yml --verify article-sample/*/*.md | \
-            reviewdog -reporter=github-pr-review \
-            -diff='git --no-pager diff origin/main' \
-            -efm='%f(%l,%c): %m' \
-            -name=prh
+            prh --rules prh/prh.yml --verify article-sample/*/*.md > prh.log
+        - uses: actions/upload-artifact@v3
+        with:
+          name: prh
+          path: ./prh.log
 
   textlint:
     runs-on: ubuntu-latest
@@ -53,11 +46,40 @@ jobs:
           image: textlint
           options: -v ${{ github.workspace }}:/work
           run: >
-            GITHUB_URL=https://raw.githubusercontent.com/reviewdog/reviewdog && \
-            INSTALL_URL=${GITHUB_URL}/master/install.sh && \
-            wget -O - -q ${INSTALL_URL} | sh -s
-            textlint --format checkstyle --config textlint/.textlintrc article-sample/*/*.md | \
-            reviewdog -reporter=github-pr-review \
-            -diff='git --no-pager diff origin/main' \
-            -f=checkstyle \
-            -name=textlint
+            textlint --format checkstyle --config textlint/.textlintrc article-sample/*/*.md > textlint.log
+        - uses: actions/upload-artifact@v3
+        with:
+          name: textlint
+          path: ./textlint.log
+
+  reviewdog:
+    needs: [prh, textlint]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: prh
+          path: prh.log
+      - uses: actions/download-artifact@v3
+        with:
+          name: textlint
+          path: textlint.log
+      - uses: reviewdog/action-setup@v1
+        with:
+          reviewdog_version: latest
+      - name: Run reviewdog prh
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >
+          cat prh.log | reviewdog -reporter=github-pr-review \
+          -diff='git --no-pager diff origin/main' \
+          -efm='%f(%l,%c): %m' \
+          -name=prh
+      - name: Run reviewdog prh
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >
+          cat textlint.log | reviewdog -reporter=github-pr-review \
+          -diff='git --no-pager diff origin/main' \
+          -f=checkstyle \
+          -name=textlint
