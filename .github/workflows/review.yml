@@ -1,0 +1,24 @@
+name: review
+
+on:
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: build prh
+        uses: docker/build-push-action@v2
+        with:
+          file: prh/Dockerfile
+          tags: prh
+          push: false
+
+      - uses: addnab/docker-run-actions@v3
+        with:
+          image: prh
+          options: -v ${{ github.workspace }}:/work
+          run: prh --rules prh/prh.yml --verify article-sample/*/*.md
