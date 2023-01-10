@@ -15,12 +15,17 @@ jobs:
           file: prh/Dockerfile
           tags: prh
           push: false
+      - name: install reviewdog
+        run: >
+          GITHUB_URL=https://raw.githubusercontent.com/reviewdog/reviewdog &&
+          INSTALL_URL=${GITHUB_URL}/master/install.sh &&
+          wget -O - -q ${INSTALL_URL} | sh -s
       - name: run prh
         uses: addnab/docker-run-action@v3
         with:
           image: prh
           options: -v ${{ github.workspace }}:/work
-          run: prh --rules prh/prh.yml --verify article-sample/*/*.md
+          run: .github/workflows/scripts/prh.sh
 
   textlint:
     runs-on: ubuntu-latest
@@ -33,9 +38,14 @@ jobs:
           file: textlint/Dockerfile
           tags: textlint
           push: false
+      - name: install reviewdog
+        run: >
+          GITHUB_URL=https://raw.githubusercontent.com/reviewdog/reviewdog &&
+          INSTALL_URL=${GITHUB_URL}/master/install.sh &&
+          wget -O - -q ${INSTALL_URL} | sh -s
       - name: run textlint
         uses: addnab/docker-run-action@v3
         with:
           image: textlint
           options: -v ${{ github.workspace }}:/work
-          run: textlint --config textlint/.textlintrc article-sample/*/*.md
+          run: .github/workflows/scripts/textlint.sh
