@@ -4,26 +4,17 @@ on:
   pull_request:
 
 jobs:
-  lint:
+  prh:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
         uses: actions/checkout@v2
-
       - name: build prh
         uses: docker/build-push-action@v2
         with:
           file: prh/Dockerfile
           tags: prh
           push: false
-
-      - name: build textlint
-        uses: docker/build-push-action@v2
-        with:
-          file: textlint/Dockerfile
-          tags: textlint
-          push: false
-
       - name: run prh
         uses: addnab/docker-run-action@v3
         with:
@@ -31,6 +22,17 @@ jobs:
           options: -v ${{ github.workspace }}:/work
           run: prh --rules prh/prh.yml --verify article-sample/*/*.md
 
+  textlint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: build textlint
+        uses: docker/build-push-action@v2
+        with:
+          file: textlint/Dockerfile
+          tags: textlint
+          push: false
       - name: run textlint
         uses: addnab/docker-run-action@v3
         with:
