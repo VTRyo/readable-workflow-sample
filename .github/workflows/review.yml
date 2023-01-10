@@ -22,7 +22,7 @@ jobs:
           options: -v ${{ github.workspace }}:/work
           run: >
             prh --rules prh/prh.yml --verify article-sample/*/*.md > prh.log
-        - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v3
         with:
           name: prh
           path: ./prh.log
@@ -39,8 +39,6 @@ jobs:
           tags: textlint
           push: false
       - name: run textlint
-        env:
-          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: addnab/docker-run-action@v3
         with:
           image: textlint
