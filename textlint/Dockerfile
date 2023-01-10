@@ -8,5 +8,4 @@ RUN set -x && \
     npm cache clean --force
 
 WORKDIR /work
-ENTRYPOINT ["/usr/local/bin/textlint"]
-CMD ["--help"]
+ENTRYPOINT ["/bin/bash", "-c"]

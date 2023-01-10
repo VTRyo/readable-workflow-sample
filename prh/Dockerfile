@@ -5,5 +5,4 @@ RUN set -x && \
   npm cache clean --force
 
 WORKDIR /work
-ENTRYPOINT ["/usr/local/bin/prh"]
-CMD ["--help"]
+ENTRYPOINT ["/bin/bash", "-c"]

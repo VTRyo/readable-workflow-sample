@@ -27,7 +27,6 @@ jobs:
           image: prh
           options: -v ${{ github.workspace }}:/work
           run: >
-            ls -l && \
             prh --rules prh/prh.yml --verify article-sample/*/*.md \
             | /usr/local/bin/reviewdog -f=checkstyle -name="prh" -diff="git diff ${{ github.event.pull_request.base.ref }}" -reporter=github-pr-review -level=error
 
