@@ -26,8 +26,7 @@ jobs:
         with:
           image: prh
           options: -v ${{ github.workspace }}:/work
-          run: >
-            prh --rules prh/prh.yml --verify article-sample/*/*.md
+          run: sh .github/workflows/scripts/prh.sh
   # textlint:
   #   runs-on: ubuntu-latest
   #   steps:
