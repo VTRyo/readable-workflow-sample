@@ -27,7 +27,8 @@ jobs:
           image: prh
           options: -v ${{ github.workspace }}:/work
           run: >
-            prh --rules prh/prh.yml --verify article-sample/*/*.md
+            prh --rules prh/prh.yml --verify article-sample/*/*.md > prh.log && \
+            cat prh.log | bin/reviewdog -f=checkstyle -name="prh" -reporter=github-pr-review -level=error
   # textlint:
   #   runs-on: ubuntu-latest
   #   steps:
