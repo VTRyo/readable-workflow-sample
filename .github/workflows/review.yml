@@ -45,7 +45,7 @@ jobs:
           options: -v ${{ github.workspace }}:/work
           run: >
             textlint --format checkstyle --config textlint/.textlintrc article-sample/*/*.md > textlint.log
-        - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v3
         with:
           name: textlint
           path: ./textlint.log
