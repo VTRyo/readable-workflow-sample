@@ -56,7 +56,7 @@ jobs:
             GITHUB_URL=https://raw.githubusercontent.com/reviewdog/reviewdog && \
             INSTALL_URL=${GITHUB_URL}/master/install.sh && \
             wget -O - -q ${INSTALL_URL} | sh -s
-            textlint --format checkstyle --config textlint/.textlintrc article-sample/*/*.md > | \
+            textlint --format checkstyle --config textlint/.textlintrc article-sample/*/*.md | \
             reviewdog -reporter=github-pr-review \
             -diff='git --no-pager diff origin/main' \
             -f=checkstyle \
