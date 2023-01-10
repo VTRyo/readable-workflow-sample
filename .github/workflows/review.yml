@@ -17,8 +17,23 @@ jobs:
           tags: prh
           push: false
 
-      - uses: addnab/docker-run-action@v3
+      - name: build textlint
+        uses: docker/build-push-action@v2
+        with:
+          file: textlint/Dockerfile
+          tags: textlint
+          push: false
+
+      - name: run prh
+        uses: addnab/docker-run-action@v3
         with:
           image: prh
           options: -v ${{ github.workspace }}:/work
           run: prh --rules prh/prh.yml --verify article-sample/*/*.md
+
+      - name: run textlint
+        uses: addnab/docker-run-action@v3
+        with:
+          image: textlint
+          options: -v ${{ github.workspace }}:/work
+          run: textlint --config textlint/.textlintrc article-sample/*/*.md
