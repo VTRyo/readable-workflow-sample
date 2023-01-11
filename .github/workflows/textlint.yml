@@ -1,6 +1,6 @@
 name: textlint
 
-on: [pull_request, push]
+on: [pull_request]
     
 jobs:
   textlint:
@@ -21,4 +21,4 @@ jobs:
           github_token: ${{ secrets.github_token }}
           reporter: github-pr-review
           level: warning
-          textlint_flags: "article-sample/*/*.md"
+          textlint_flags: "article-sample/**"
