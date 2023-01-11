@@ -12,13 +12,19 @@ jobs:
         with:
           submodules: true
       - name: Setup node/npm
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
+        
+      - name: textlint-github-check
+        uses: tsuyoshicho/action-textlint@v3
         with:
-          node-version: '15'
+          github_token: ${{ secrets.github_token }}
+          reporter: github-check
+          level: warning
+          textlint_flags: "article-sample/**/**"
       - name: textlint-github-pr-review
         uses: tsuyoshicho/action-textlint@v3
         with:
           github_token: ${{ secrets.github_token }}
           reporter: github-pr-review
           level: warning
-          textlint_flags: "article-sample/**"
+          textlint_flags: "article-sample/**/**"

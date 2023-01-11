@@ -27,8 +27,5 @@
     "prh": {
       "rulePaths": ["rules.yml"]
     }
-  },
-  "filters": {
-    "comments": true
   }
 }
